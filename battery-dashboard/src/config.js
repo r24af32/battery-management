@@ -1,2 +1,2 @@
-const API_BASE_URL = "http://localhost:3000"; // or your server IP if deployed
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default API_BASE_URL;
