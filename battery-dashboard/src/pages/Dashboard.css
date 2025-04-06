@@ -1,0 +1,56 @@
+body {
+    margin: 0;
+    background-color: #f0f2f5;
+  }
+  
+
+.dashboard {
+    padding: 20px;
+    font-family: 'Segoe UI', sans-serif;
+    max-width: 900px;
+    margin: auto;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .card {
+    background-color: #f8f8f8;
+    border-left: 5px solid #0077cc;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .card p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 5px;
+  }
+  
+  .card h2 {
+    font-size: 1.8rem;
+    color: #222;
+  }
+  
+  .card.voltage { border-color: #4caf50; }
+  .card.current { border-color: #2196f3; }
+  .card.temperature { border-color: #f44336; }
+  .card.percentage { border-color: #ff9800; }
+  
+  .loading {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+  }
+  
