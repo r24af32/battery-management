@@ -1,5 +1,5 @@
 import express from 'express';
-import BatteryData from '../models/batteryData.js'; // adjust path if needed
+import BatteryData from '../models/batteryData.js';
 
 const router = express.Router();
 
@@ -8,9 +8,23 @@ let latestData = null;
 // ✅ POST from ESP8266
 router.post('/data', async (req, res) => {
   try {
+    // ✅ Debug log the raw body
+    console.log("🔍 Incoming raw data:", req.body);
+
+    // ✅ Check for valid body
+    if (
+      !req.body ||
+      typeof req.body.voltage !== 'number' ||
+      typeof req.body.current !== 'number' ||
+      typeof req.body.temperature !== 'number' ||
+      typeof req.body.percentage !== 'number'
+    ) {
+      console.log("❌ Invalid data format received:", req.body);
+      return res.status(400).json({ message: "Invalid data format" });
+    }
+
     latestData = req.body;
 
-    // Save to DB
     const batteryEntry = new BatteryData(latestData);
     await batteryEntry.save();
 
