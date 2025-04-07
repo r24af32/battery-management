@@ -5,22 +5,25 @@ const router = express.Router();
 
 let latestData = null;
 
-// ✅ POST from ESP8266
 router.post('/data', async (req, res) => {
   try {
-    console.log("🔍 Incoming raw data:", req.body); // Debug print
+    console.log("🔍 Incoming raw data:", req.body);
 
-    const { voltage, current, temperature, percentage } = req.body;
+    // Convert to numbers
+    const voltage = parseFloat(req.body.voltage);
+    const current = parseFloat(req.body.current);
+    const temperature = parseFloat(req.body.temperature);
+    const percentage = parseInt(req.body.percentage);
 
-    // Check for missing or incorrect keys
+    // Validate
     if (
-      typeof voltage !== 'number' ||
-      typeof current !== 'number' ||
-      typeof temperature !== 'number' ||
-      typeof percentage !== 'number'
+      isNaN(voltage) ||
+      isNaN(current) ||
+      isNaN(temperature) ||
+      isNaN(percentage)
     ) {
-      console.error("❌ Invalid data format received:", req.body);
-      return res.status(400).json({ message: "Invalid data format" });
+      console.error("❌ Invalid number format:", req.body);
+      return res.status(400).json({ message: "Invalid number format" });
     }
 
     const batteryEntry = new BatteryData({
@@ -31,11 +34,12 @@ router.post('/data', async (req, res) => {
     });
 
     await batteryEntry.save();
-    console.log("📥 Received & saved:", batteryEntry);
+    console.log("📥 Data saved:", batteryEntry);
     res.status(200).json({ message: "Data saved successfully" });
+
   } catch (error) {
-    console.error("❌ Error saving data:", error);
-    res.status(500).json({ message: "Error saving data" });
+    console.error("❌ Error in /api/data:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
