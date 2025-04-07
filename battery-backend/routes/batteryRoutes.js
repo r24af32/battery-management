@@ -8,33 +8,37 @@ let latestData = null;
 // ✅ POST from ESP8266
 router.post('/data', async (req, res) => {
   try {
-    // ✅ Debug log the raw body
-    console.log("🔍 Incoming raw data:", req.body);
+    console.log("🔍 Incoming raw data:", req.body); // Debug print
 
-    // ✅ Check for valid body
+    const { voltage, current, temperature, percentage } = req.body;
+
+    // Check for missing or incorrect keys
     if (
-      !req.body ||
-      typeof req.body.voltage !== 'number' ||
-      typeof req.body.current !== 'number' ||
-      typeof req.body.temperature !== 'number' ||
-      typeof req.body.percentage !== 'number'
+      typeof voltage !== 'number' ||
+      typeof current !== 'number' ||
+      typeof temperature !== 'number' ||
+      typeof percentage !== 'number'
     ) {
-      console.log("❌ Invalid data format received:", req.body);
+      console.error("❌ Invalid data format received:", req.body);
       return res.status(400).json({ message: "Invalid data format" });
     }
 
-    latestData = req.body;
+    const batteryEntry = new BatteryData({
+      voltage,
+      current,
+      temperature,
+      percentage,
+    });
 
-    const batteryEntry = new BatteryData(latestData);
     await batteryEntry.save();
-
-    console.log("📥 Received & saved:", latestData);
+    console.log("📥 Received & saved:", batteryEntry);
     res.status(200).json({ message: "Data saved successfully" });
   } catch (error) {
     console.error("❌ Error saving data:", error);
     res.status(500).json({ message: "Error saving data" });
   }
 });
+
 
 // ✅ GET latest for UI
 router.get('/latest', (req, res) => {
